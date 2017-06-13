@@ -62,6 +62,31 @@ function rangeMinLimiter(zoomPanOptions, newMin) {
     return newMin;
 }
 
+function rangeMaxMinLimiter(scale, zoomPanOptions, tickMin, tickMax) {
+    if (zoomPanOptions.scaleAxes &&
+        zoomPanOptions.rangeMin &&
+        zoomPanOptions.rangeMax &&
+        zoomPanOptions.rangeMin[zoomPanOptions.scaleAxes] &&
+        zoomPanOptions.rangeMax[zoomPanOptions.scaleAxes]
+    ) {
+        var rangeMax = zoomPanOptions.rangeMax[zoomPanOptions.scaleAxes];
+        var rangeMin = zoomPanOptions.rangeMin[zoomPanOptions.scaleAxes];
+        var deltaMinMax = scale.originalOptions.ticks.max - scale.originalOptions.ticks.min;
+        if (tickMax - tickMin < deltaMinMax) {
+            if (rangeMax === tickMax) {
+                tickMin = tickMax - deltaMinMax;
+            }
+            else if (rangeMin === tickMin) {
+                tickMax = tickMin + deltaMinMax;
+            }
+        }
+        return {
+            max: tickMax,
+            min: tickMin
+        }
+    }
+}
+
 function zoomIndexScale(scale, zoom, center, zoomOptions) {
     var labels = scale.chart.data.labels;
     var minIndex = scale.minIndex;
@@ -209,6 +234,7 @@ function panNumericalScale(scale, delta, panOptions) {
     var tickOpts = scale.options.ticks;
     var start = scale.start,
         end = scale.end;
+    var resultTicks;
 
     if (tickOpts.reverse) {
         tickOpts.max = scale.getValueForPixel(scale.getPixelForValue(start) - delta);
@@ -219,6 +245,9 @@ function panNumericalScale(scale, delta, panOptions) {
     }
     tickOpts.min = rangeMinLimiter(panOptions, tickOpts.min);
     tickOpts.max = rangeMaxLimiter(panOptions, tickOpts.max);
+    resultTicks = rangeMaxMinLimiter(scale, panOptions, tickOpts.min, tickOpts.max);
+    tickOpts.min = resultTicks.min;
+    tickOpts.max = resultTicks.max;
 }
 
 function panScale(scale, delta, panOptions) {
