@@ -34,13 +34,13 @@ var defaultOptions = zoomNS.defaults = {
     pan: {
         enabled: true,
         mode: 'xy',
-        speed: 20,
-        threshold: 10
+        speed: 10,
+        threshold: 20
     },
     zoom: {
         enabled: true,
         mode: 'xy',
-        sensitivity: 3
+        sensitivity: 1
     }
 };
 
