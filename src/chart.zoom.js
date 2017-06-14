@@ -71,19 +71,19 @@ function rangeMaxMinLimiter(scale, zoomPanOptions, tickMin, tickMax) {
     ) {
         var rangeMax = zoomPanOptions.rangeMax[zoomPanOptions.scaleAxes];
         var rangeMin = zoomPanOptions.rangeMin[zoomPanOptions.scaleAxes];
-        var deltaMinMax = scale.originalOptions.ticks.max - scale.originalOptions.ticks.min;
-        if (tickMax - tickMin < deltaMinMax) {
-            if (rangeMax === tickMax) {
-                tickMin = tickMax - deltaMinMax;
-            }
-            else if (rangeMin === tickMin) {
-                tickMax = tickMin + deltaMinMax;
-            }
+        var deltaMinMax = Math.abs(scale.options.ticks.delta);
+        if (tickMax >= rangeMax) {
+            tickMax = rangeMax;
+            tickMin = tickMax - deltaMinMax;
         }
-        return {
-            max: tickMax,
-            min: tickMin
+        if (tickMin <= rangeMin) {
+            tickMin = rangeMin;
+            tickMax = tickMin + deltaMinMax;
         }
+    }
+    return {
+        max: tickMax,
+        min: tickMin
     }
 }
 
@@ -310,7 +310,6 @@ zoomNS.zoomCumulativeDelta = 0;
 // Chartjs Zoom Plugin
 var zoomPlugin = {
     afterInit: function (chartInstance) {
-        console.log('zoomPlugin', 'chartInstance', chartInstance);
         helpers.each(chartInstance.scales, function (scale) {
             scale.originalOptions = JSON.parse(JSON.stringify(scale.options));
         });
