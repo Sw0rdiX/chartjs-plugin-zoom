@@ -63,7 +63,8 @@ function rangeMinLimiter(zoomPanOptions, newMin) {
 }
 
 function rangeMaxMinLimiter(scale, zoomPanOptions, tickMin, tickMax) {
-    if (zoomPanOptions.scaleAxes &&
+    if (zoomPanOptions.deltaMode &&
+        zoomPanOptions.scaleAxes &&
         zoomPanOptions.rangeMin &&
         zoomPanOptions.rangeMax &&
         zoomPanOptions.rangeMin[zoomPanOptions.scaleAxes] &&
