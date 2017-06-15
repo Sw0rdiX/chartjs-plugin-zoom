@@ -83,7 +83,11 @@ function rangeMaxMinLimiter(scale, zoomPanOptions, tickMin, tickMax) {
     ) {
         var rangeMax = zoomPanOptions.rangeMax[zoomPanOptions.scaleAxes];
         var rangeMin = zoomPanOptions.rangeMin[zoomPanOptions.scaleAxes];
-        var deltaMinMax = Math.abs(scale.options.ticks.delta);
+
+        if (!scale.options.ticks.delta) {
+            scale.options.ticks.delta = rangeMax - rangeMin;
+        }
+        var deltaMinMax = scale.options.ticks.delta;
         if (tickMax >= rangeMax) {
             tickMax = rangeMax;
             tickMin = tickMax - deltaMinMax;
